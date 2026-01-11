@@ -1,7 +1,11 @@
-# Scoundrel
+# Scoundrel ⚔️
 ## Built with MinUI
 
 This is a terminal-based implementation of the solo dungeon-crawling card game. Face monsters, equip weapons, and drink potions as you navigate through a deadly deck of cards.
+
+<p align="center">
+    <img width="771" height="865" alt="CleanShot 2026-01-10 at 21 20 00@2x" src="https://github.com/user-attachments/assets/532491cc-2fcc-45e4-8dcc-b80b4f810422" />
+</p>
 
 ## About the Game
 Scoundrel is a single-player card game where you delve into a dungeon represented by a modified deck of cards. Each room presents difficult choices: face the dangers head-on or avoid them for now? Manage your health, weapons, and limited healing to survive until the final card.
