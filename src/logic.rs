@@ -232,7 +232,9 @@ impl Game {
                     self.health -= dmg;
                     self.state = GameState::CardInteraction;
                     self.message = format!("Fought monster! Took {dmg} damage.");
-                    ResolveOutcome::AwaitContinue
+                    //ResolveOutcome::AwaitContinue
+                    self.continue_after_interaction();
+                    ResolveOutcome::None
                 }
             }
 
@@ -242,7 +244,9 @@ impl Game {
                 self.last_monster_slain_with_weapon = None;
                 self.state = GameState::CardInteraction;
                 self.message = format!("Equipped {}!", card_text(card));
-                ResolveOutcome::AwaitContinue
+                //ResolveOutcome::AwaitContinue
+                self.continue_after_interaction();
+                ResolveOutcome::None
             }
 
             // Potion
@@ -257,13 +261,15 @@ impl Game {
                     // This string isn't centralized in messages.rs, I don't think it really needs to be
                     self.message = "Potion wasted (only 1 per room).".to_string();
                 }
-                ResolveOutcome::AwaitContinue
+                //ResolveOutcome::AwaitContinue
+                self.continue_after_interaction();
+                ResolveOutcome::None
             }
 
             _ => {
                 self.state = GameState::CardInteraction;
                 self.message = "Unknown card.".to_string();
-                ResolveOutcome::AwaitContinue
+                ResolveOutcome::None
             }
         }
     }
@@ -396,10 +402,10 @@ pub fn card_text(card: Card) -> String {
     };
 
     let s = match card.suit {
-        'S' => "󰣑",
-        'C' => "󰣎",
-        'D' => "",
-        'H' => "󰋑",
+        'S' => "󱢱",
+        'C' => "󱢥",
+        'D' => "󱢩",
+        'H' => "󱢭",
         _ => "?",
     };
 

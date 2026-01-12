@@ -15,10 +15,10 @@ pub fn card_text(card: Card) -> String {
     };
 
     let s = match card.suit {
-        'S' => "󰣑",
-        'C' => "󰣎",
-        'D' => "",
-        'H' => "󰋑",
+        'S' => "󱢱",
+        'C' => "󱢥",
+        'D' => "󱢩",
+        'H' => "󱢭",
         _ => "?",
     };
 
