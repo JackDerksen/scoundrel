@@ -134,12 +134,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "figlet-rs"
-version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4742a071cd9694fc86f9fa1a08fa3e53d40cc899d7ee532295da2d085639fbc5"
-
-[[package]]
 name = "getrandom"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -191,13 +185,12 @@ checksum = "5e5032e24019045c762d3c0f28f5b6b8bbf38563a65908389bf7978758920897"
 
 [[package]]
 name = "minui"
-version = "0.6.1"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b610b28a94728c54f85a4ebd18ab5a85663dc1043255714eb81c89c9db3a38b"
+checksum = "6bf0524b5dd28c6f9ff49db2a8c763b7674a881130d2ca05d7f92d8017b60f34"
 dependencies = [
  "crokey",
  "crossterm 0.28.1",
- "figlet-rs",
  "thiserror",
 ]
 

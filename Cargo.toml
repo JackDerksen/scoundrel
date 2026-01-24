@@ -1,8 +1,8 @@
 [package]
 name = "scoundrel"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-minui = "0.6.1"
+minui = "0.6.3"
 rand = "0.8"
