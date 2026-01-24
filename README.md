@@ -4,7 +4,7 @@
 This is a terminal-based implementation of the solo dungeon-crawling card game. Face monsters, equip weapons, and drink potions as you navigate through a deadly deck of cards.
 
 <p align="center">
-    <img width="771" height="865" alt="CleanShot 2026-01-10 at 21 20 00@2x" src="https://github.com/user-attachments/assets/532491cc-2fcc-45e4-8dcc-b80b4f810422" />
+    <img width="1720" height="1854" alt="CleanShot 2026-01-23 at 22 15 40@2x" src="https://github.com/user-attachments/assets/2d931c03-6bd8-4b22-86e8-8b67242006b6" />
 </p>
 
 ## About the Game
