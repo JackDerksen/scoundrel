@@ -231,7 +231,14 @@ impl Game {
                     let dmg = self.handle_monster_without_weapon(card);
                     self.health -= dmg;
                     self.state = GameState::CardInteraction;
-                    self.message = format!("Fought monster! Took {dmg} damage.");
+
+                    self.message = if self.weapon.is_some() {
+                        "Your weapon is too degraded to hurt this monster. You fight bare-handed."
+                            .to_string()
+                    } else {
+                        format!("Fought monster! Took {dmg} damage.")
+                    };
+
                     //ResolveOutcome::AwaitContinue
                     self.continue_after_interaction();
                     ResolveOutcome::None

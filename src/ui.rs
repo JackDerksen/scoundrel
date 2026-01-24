@@ -6,10 +6,12 @@
 //! - Render the game as nested `Container`s
 //! - Register clickable hitboxes for card slots via `InteractionCache::register`
 
+use std::time::Duration;
+
+use minui::Window;
 use minui::prelude::*;
 use minui::ui::UiScene;
-use minui::widgets::{ContainerPadding, TextInput, TextInputState, WidgetArea};
-use minui::Window;
+use minui::widgets::{ContainerPadding, TextInput, TextInputState, Tooltip, WidgetArea};
 
 use crate::logic::{Game, GameState};
 use crate::messages as msg;
@@ -75,6 +77,8 @@ pub struct AppState {
     pub dragging: bool,
 
     pub should_quit: bool,
+    pub mouse_pos: (u16, u16),
+    pub card_hovers: [HoverTracker; 4],
 }
 
 impl AppState {
@@ -89,6 +93,13 @@ impl AppState {
             mouse_down: false,
             dragging: false,
             should_quit: false,
+            mouse_pos: (0, 0),
+            card_hovers: [
+                HoverTracker::new(),
+                HoverTracker::new(),
+                HoverTracker::new(),
+                HoverTracker::new(),
+            ],
         }
     }
 
@@ -118,6 +129,26 @@ pub fn update(state: &mut AppState, event: Event) -> bool {
 
     // Mouse events: click-to-focus input / click-to-select cards / drag selection in input
     match event {
+        Event::MouseMove { x, y } => {
+            state.mouse_pos = (x, y);
+
+            // Check which card slots are being hovered
+            let hit = state.ui.hit_test_id(x, y);
+            for i in 0..4 {
+                let card_id = match i {
+                    0 => ID_CARD_1,
+                    1 => ID_CARD_2,
+                    2 => ID_CARD_3,
+                    _ => ID_CARD_4,
+                };
+
+                if hit == Some(card_id) {
+                    state.card_hovers[i].start_hover();
+                } else {
+                    state.card_hovers[i].end_hover();
+                }
+            }
+        }
         Event::MouseClick { x, y, button: _ } => {
             state.mouse_down = true;
             state.dragging = false;
@@ -130,19 +161,91 @@ pub fn update(state: &mut AppState, event: Event) -> bool {
                     return true;
                 }
                 Some(ID_CARD_1) => {
-                    let _ = state.game.play_card_from_slot(0);
+                    // Only allow clicking cards when we're actually in the selection state.
+                    // If not, show state-appropriate guidance (avoid stale/incorrect MUST_FACE_FIRST).
+                    if state.game.state == GameState::CardSelection {
+                        let _ = state.game.play_card_from_slot(0);
+                    } else {
+                        state.game.message = match state.game.state {
+                            GameState::RoomChoice => msg::NEED_FACE_OR_SKIP.to_string(),
+                            GameState::CardInteraction => {
+                                if state.game.awaiting_weapon_choice {
+                                    msg::NEED_Y_OR_N.to_string()
+                                } else {
+                                    msg::HINT_INTERACTION_ACK.to_string()
+                                }
+                            }
+                            GameState::MainMenu => msg::NEED_START.to_string(),
+                            GameState::GameOver => msg::RESTART_HELP.to_string(),
+                            GameState::CardSelection => msg::NEED_SELECT_CARD.to_string(),
+                        };
+                    }
                     return true;
                 }
                 Some(ID_CARD_2) => {
-                    let _ = state.game.play_card_from_slot(1);
+                    // Only allow clicking cards when we're actually in the selection state.
+                    // If not, show state-appropriate guidance (avoid stale/incorrect MUST_FACE_FIRST).
+                    if state.game.state == GameState::CardSelection {
+                        let _ = state.game.play_card_from_slot(1);
+                    } else {
+                        state.game.message = match state.game.state {
+                            GameState::RoomChoice => msg::NEED_FACE_OR_SKIP.to_string(),
+                            GameState::CardInteraction => {
+                                if state.game.awaiting_weapon_choice {
+                                    msg::NEED_Y_OR_N.to_string()
+                                } else {
+                                    msg::HINT_INTERACTION_ACK.to_string()
+                                }
+                            }
+                            GameState::MainMenu => msg::NEED_START.to_string(),
+                            GameState::GameOver => msg::RESTART_HELP.to_string(),
+                            GameState::CardSelection => msg::NEED_SELECT_CARD.to_string(),
+                        };
+                    }
                     return true;
                 }
                 Some(ID_CARD_3) => {
-                    let _ = state.game.play_card_from_slot(2);
+                    // Only allow clicking cards when we're actually in the selection state.
+                    // If not, show state-appropriate guidance (avoid stale/incorrect MUST_FACE_FIRST).
+                    if state.game.state == GameState::CardSelection {
+                        let _ = state.game.play_card_from_slot(2);
+                    } else {
+                        state.game.message = match state.game.state {
+                            GameState::RoomChoice => msg::NEED_FACE_OR_SKIP.to_string(),
+                            GameState::CardInteraction => {
+                                if state.game.awaiting_weapon_choice {
+                                    msg::NEED_Y_OR_N.to_string()
+                                } else {
+                                    msg::HINT_INTERACTION_ACK.to_string()
+                                }
+                            }
+                            GameState::MainMenu => msg::NEED_START.to_string(),
+                            GameState::GameOver => msg::RESTART_HELP.to_string(),
+                            GameState::CardSelection => msg::NEED_SELECT_CARD.to_string(),
+                        };
+                    }
                     return true;
                 }
                 Some(ID_CARD_4) => {
-                    let _ = state.game.play_card_from_slot(3);
+                    // Only allow clicking cards when we're actually in the selection state.
+                    // If not, show state-appropriate guidance (avoid stale/incorrect MUST_FACE_FIRST).
+                    if state.game.state == GameState::CardSelection {
+                        let _ = state.game.play_card_from_slot(3);
+                    } else {
+                        state.game.message = match state.game.state {
+                            GameState::RoomChoice => msg::NEED_FACE_OR_SKIP.to_string(),
+                            GameState::CardInteraction => {
+                                if state.game.awaiting_weapon_choice {
+                                    msg::NEED_Y_OR_N.to_string()
+                                } else {
+                                    msg::HINT_INTERACTION_ACK.to_string()
+                                }
+                            }
+                            GameState::MainMenu => msg::NEED_START.to_string(),
+                            GameState::GameOver => msg::RESTART_HELP.to_string(),
+                            GameState::CardSelection => msg::NEED_SELECT_CARD.to_string(),
+                        };
+                    }
                     return true;
                 }
                 _ => {
@@ -234,9 +337,10 @@ fn submit_command(state: &mut AppState) {
         }
 
         GameState::RoomChoice => {
-            if cmd.eq_ignore_ascii_case("f") {
+            // Accept either the short forms (f/s) or the clearer words (face/skip)
+            if cmd.eq_ignore_ascii_case("f") || cmd.eq_ignore_ascii_case("face") {
                 state.game.face_room();
-            } else if cmd.eq_ignore_ascii_case("s") {
+            } else if cmd.eq_ignore_ascii_case("s") || cmd.eq_ignore_ascii_case("skip") {
                 state.game.skip_room();
             } else if state.game.can_skip {
                 state.game.message = msg::NEED_FACE_OR_SKIP.to_string();
@@ -541,6 +645,23 @@ pub fn draw(state: &mut AppState, window: &mut dyn Window) -> minui::Result<()> 
 
     input_widget.draw_with_id(window, &mut state.input, state.ui.cache_mut(), ID_INPUT)?;
 
+    // Draw tooltips (rendered last to appear on top. I'll add proper z-ordering to MinUI soon!)
+    for i in 0..4usize {
+        if let Some(card) = state.game.room_slots[i] {
+            if state.card_hovers[i].should_show_tooltip(Duration::from_millis(300)) {
+                let tooltip_text = card_tooltip_text(card, &state.game);
+                let tooltip = Tooltip::new(&tooltip_text)
+                    .with_delay(Duration::from_millis(200))
+                    .with_color(ColorPair::new(Color::LightGray, Color::DarkGray));
+
+                let (tooltip_x, tooltip_y) =
+                    tooltip.position_near_mouse(state.mouse_pos.0, state.mouse_pos.1, w, h);
+
+                tooltip.draw_at(window, tooltip_x, tooltip_y)?;
+            }
+        }
+    }
+
     // End frame applies cursor request
     window.end_frame()?;
     Ok(())
@@ -565,5 +686,46 @@ fn state_hint(game: &Game) -> &'static str {
             }
         }
         GameState::GameOver => msg::HINT_GAME_OVER,
+    }
+}
+
+fn card_tooltip_text(card: crate::logic::Card, game: &Game) -> String {
+    match card.suit {
+        'S' | 'C' => {
+            let base_damage = card.value as i32;
+
+            if let Some(weapon) = game.weapon {
+                if game.can_use_weapon_on(card) {
+                    let weapon_value = weapon.value as i32;
+                    let damage = (base_damage - weapon_value).max(0);
+                    format!(
+                        "Monster (ATK {}) - With weapon: {} damage",
+                        base_damage, damage
+                    )
+                } else {
+                    //let limit = game.last_monster_slain_with_weapon.unwrap_or(0);
+                    format!(
+                        "Monster (ATK {}) - Weapon degraded. Will take {} damage",
+                        base_damage, base_damage
+                    )
+                }
+            } else {
+                format!("Monster (ATK {})", base_damage)
+            }
+        }
+        'D' => {
+            let weapon_value = card.value as i32;
+            let limit_text = game
+                .last_monster_slain_with_weapon
+                .map(|l| format!(" (updates to < {})", l))
+                .unwrap_or_else(|| " (no restriction)".to_string());
+
+            format!("Weapon (ATK {}){}", weapon_value, limit_text)
+        }
+        'H' => {
+            let heal_amount = card.value as i32;
+            format!("Potion (Heal for {})", heal_amount)
+        }
+        _ => "Unknown card".to_string(),
     }
 }
